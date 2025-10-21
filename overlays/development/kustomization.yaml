@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ingress.yaml
+- ../../base
+images:
+- name: h6bro/service-apigateway
+  newName: h6bro/service-apigateway
+  newTag: 85469d6
+- name: h6bro/service-user
+  newName: h6bro/service-user
+  newTag: 85469d6
+
+#- name: h6bro/service-catalog
+#  newName: h6bro/service-catalog
+#  newTag: 85469d6
+#- name: h6bro/service-order
+#  newName: h6bro/service-order
+#  newTag: 85469d6

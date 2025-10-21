@@ -1,0 +1,31 @@
+# heojunhyoung/k8s-msa-manifest/k8s-msa-manifest-dev/base/rbac.yaml
+
+# Role: 'service-reader'라는 이름의 역할을 정의합니다.
+# 이 역할은 서비스, 엔드포인트, 파드 리소스를 조회하고, 목록을 보고, 변경을 감지할 권한을 가집니다.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: service-reader
+  namespace: linkfolio
+rules:
+  - apiGroups: [""] # ""는 코어 API 그룹을 의미합니다.
+    resources: ["services", "endpoints", "pods"]
+    verbs: ["get", "list", "watch"]
+
+---
+
+# RoleBinding: 위에서 정의한 'service-reader' 역할을 특정 대상에게 부여합니다.
+# 여기서는 'linkfolio' 네임스페이스의 'default' 서비스 계정(ServiceAccount)에게 부여합니다.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: default-service-reader-binding
+  namespace: linkfolio
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: linkfolio
+roleRef:
+  kind: Role
+  name: service-reader
+  apiGroup: rbac.authorization.k8s.io

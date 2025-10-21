@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-service-config
+  namespace: linkfolio
+data:
+  DB_HOST: "mysql-user-service:3306"
+  MYSQL_DATABASE: "user_db" # DB 이름
+  JPA_DDL_AUTO: "create"
+  JPA_SHOW_SQL: "true"
+  JPA_FORMAT_SQL: "true"
+  GRPC_CLIENT_ORDER_SERVICE_ADDRESS: "static://order-service:9099"

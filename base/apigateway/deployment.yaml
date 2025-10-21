@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigateway-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: apigateway-pod-label
+  template:
+    metadata:
+      labels:
+        app: apigateway-pod-label
+    spec:
+      containers:
+        - name: apigateway-container
+          image: h6bro/service-apigateway
+          ports:
+            - containerPort: 8000

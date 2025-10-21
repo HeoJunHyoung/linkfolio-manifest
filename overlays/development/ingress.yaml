@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: linkfolio
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "dev-msa.127.0.0.1.nip.io"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: apigateway-service
+            port:
+              number: 80
