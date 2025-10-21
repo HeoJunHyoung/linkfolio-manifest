@@ -17,3 +17,6 @@ spec:
           image: h6bro/service-apigateway
           ports:
             - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: apigateway-service-credentials
