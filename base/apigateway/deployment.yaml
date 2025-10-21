@@ -18,5 +18,7 @@ spec:
           ports:
             - containerPort: 8000
           envFrom:
+            - configMapRef:
+                name: apigateway-config
             - secretRef:
                 name: apigateway-service-credentials
