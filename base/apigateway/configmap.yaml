@@ -15,4 +15,4 @@ data:
   # 2. Excluded URLs (Spring Boot 환경 변수 형식: 대문자, _ 사용)
   # 키 이름을 application.yml과 일치시키려면 APP_GATEWAY_EXCLUDED-URLS 와 같이 사용
   # 또는 Spring Boot가 인식하는 APP_GATEWAY_EXCLUDEDURLS 형식 사용 (쉼표로 구분)
-  APP_GATEWAY_EXCLUDEDURLS: "/user-service/users/login,/user-service/users/signup,/user-service/welcome,/actuator,/user-service/swagger-ui,/user-service/v3/api-docs"
+  APP_GATEWAY_EXCLUDEDURLS: "/user-service/users/login,/user-service/users/signup,/user-service/welcome,/actuator,/user-service/swagger-ui,/user-service/v3/api-docs,/user-service/oauth2/authorization,/user-service/login/oauth2/code"

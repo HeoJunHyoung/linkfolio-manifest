@@ -10,3 +10,4 @@ data:
   JPA_SHOW_SQL: "true"
   JPA_FORMAT_SQL: "true"
   GRPC_CLIENT_ORDER_SERVICE_ADDRESS: "static://order-service:9099"
+  APP_FRONTEND_REDIRECT_URL: "http://localhost:1234/test-callback" # 추후 변경
