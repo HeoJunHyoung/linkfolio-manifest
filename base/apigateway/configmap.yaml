@@ -9,7 +9,7 @@ data:
   SPRING_CLOUD_GATEWAY_ROUTES_0_ID: "user-service-route"
   SPRING_CLOUD_GATEWAY_ROUTES_0_URI: "http://user-service:80" # ✅ K8s 내부 서비스 주소
   SPRING_CLOUD_GATEWAY_ROUTES_0_PREDICATES_0: "Path=/user-service/**"
-  SPRING_CLOUD_GATEWAY_ROUTES_0_FILTERS_0: "RewritePath=/user-service/(?<segment>.*), /${segment}"
+#  SPRING_CLOUD_GATEWAY_ROUTES_0_FILTERS_0: "RewritePath=/user-service/(?<segment>.*), /${segment}"
   # (다른 서비스 라우트 추가 시 여기에 계속 추가...)
 
   # 2. Excluded URLs (Spring Boot 환경 변수 형식: 대문자, _ 사용)
