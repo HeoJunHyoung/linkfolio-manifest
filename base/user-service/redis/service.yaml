@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-user-service # 이 이름이 ConfigMap의 REDIS_HOST 값이 됨
+  namespace: linkfolio
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app: redis-user # Deployment의 Pod 레이블과 일치

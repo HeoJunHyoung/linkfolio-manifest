@@ -11,3 +11,5 @@ data:
   JPA_FORMAT_SQL: "true"
   GRPC_CLIENT_ORDER_SERVICE_ADDRESS: "static://order-service:9099"
   APP_FRONTEND_REDIRECT_URL: "http://127.0.0.1:5500/callback.html"
+  REDIS_HOST: "redis-user-service"
+  REDIS_PORT: "6379"
