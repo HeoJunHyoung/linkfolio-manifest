@@ -5,5 +5,4 @@ resources:
   - ./database-commons
   - ./apigateway
   - ./user-service
-  - ./redis
   - rbac.yaml
