@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-service-config # base에 있는 ConfigMap 이름과 동일해야 함
+  namespace: linkfolio
+data:
+  # ngrok 환경에서 사용할 값으로 덮어쓰기
+  APP_OAUTH_REDIRECT_BASE_URL: "https://impressionless-connaturally-jonie.ngrok-free.dev"

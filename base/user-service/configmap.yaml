@@ -22,3 +22,6 @@ data:
   SPRING_MAIL_FROM_NAME: "LinkFolio"
 
   APP_VERIFICATION_CODE_EXPIRATION_MINUTES: "3"
+
+  # OAuth 리디렉션 기본 URL (ngrok 미사용 시)
+  APP_OAUTH_REDIRECT_BASE_URL: "http://linkfolio.127.0.0.1.nip.io"

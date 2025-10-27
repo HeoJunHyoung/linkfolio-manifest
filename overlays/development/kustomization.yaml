@@ -11,3 +11,10 @@ images:
 - name: h6bro/service-user
   newName: h6bro/service-user
   newTag: 68d9c87
+
+# ngrok을 사용하지 않는 로컬 실행 환경이라면, 아래 내용 주석 !!!
+patches:
+  - path: patch-user-configmap-ngrok.yaml
+    target:
+      kind: ConfigMap
+      name: user-service-config
