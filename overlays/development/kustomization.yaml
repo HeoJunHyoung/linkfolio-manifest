@@ -7,7 +7,7 @@ resources:
 images:
 - name: h6bro/service-apigateway
   newName: h6bro/service-apigateway
-  newTag: ed50c5e
+  newTag: 68d9c87
 - name: h6bro/service-user
   newName: h6bro/service-user
-  newTag: ed50c5e
+  newTag: 68d9c87
