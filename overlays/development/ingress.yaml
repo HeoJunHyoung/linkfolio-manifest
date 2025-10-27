@@ -15,3 +15,14 @@ spec:
             name: apigateway-service
             port:
               number: 80
+
+  - host: "impressionless-connaturally-jonie.ngrok-free.dev"
+    http:
+      paths:
+      - path: / # 모든 경로를 apigateway로 보냄
+        pathType: Prefix
+        backend:
+          service:
+            name: apigateway-service # 동일한 API Gateway 서비스로 라우팅
+            port:
+              number: 80
