@@ -1,4 +1,4 @@
-# heojunhyoung/k8s-msa-manifest/k8s-msa-manifest-dev/base/user-service/db/init-db-configmap.yaml
+# heojunhyoung/k8s-msa-manifest/k8s-msa-manifest-dev/base/user-service/db/init-db-configmap.yaml (수정본)
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,7 +9,7 @@ data:
     set -e
     
     mysql -u root -p"${MYSQL_ROOT_PASSWORD}" <<-EOSQL
-      CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
+      CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
       CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
       GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
       FLUSH PRIVILEGES;
