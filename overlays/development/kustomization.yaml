@@ -15,6 +15,7 @@ images:
     newName: h6bro/service-auth
     newTag: 200f9bb
 
+
 # ngrok을 사용하지 않는 로컬 실행 환경이라면, 아래 내용 주석 !!!
 patches:
   - path: patch-auth-configmap-ngrok.yaml # 파일명 변경
