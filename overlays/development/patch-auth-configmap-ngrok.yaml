@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: user-service-config # base에 있는 ConfigMap 이름과 동일해야 함
+  name: auth-service-config # 대상 ConfigMap 이름
   namespace: linkfolio
 data:
   # ngrok 환경에서 사용할 값으로 덮어쓰기

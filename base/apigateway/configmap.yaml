@@ -1,14 +1,18 @@
-# base/apigateway/configmap.yaml 수정
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: apigateway-config
   namespace: linkfolio
 data:
-  # 1. Routes
+  # 1. User Service Route
   SPRING_CLOUD_GATEWAY_ROUTES_0_ID: "user-service-route"
   SPRING_CLOUD_GATEWAY_ROUTES_0_URI: "http://user-service:80"
   SPRING_CLOUD_GATEWAY_ROUTES_0_PREDICATES_0: "Path=/user-service/**"
 
-  # 2. Excluded URLs
-  APP_GATEWAY_EXCLUDEDURLS: "/user-service/users/login,/user-service/users/signup,/user-service/welcome,/actuator,/user-service/swagger-ui,/user-service/v3/api-docs,/user-service/oauth2/authorization/**,/user-service/login/oauth2/code/**,/user-service/users/refresh,/user-service/users/logout,/user-service/users/email-verification/send,/user-service/users/email-verification/check,/user-service/users/find-username,/user-service/users/password-reset/send-code,/user-service/users/password-reset/verify-code,/user-service/users/password-reset/change,/user-service/users/check-username,/user-service/users/check-password"
+  # 2. Auth Service Route
+  SPRING_CLOUD_GATEWAY_ROUTES_1_ID: "auth-service-route"
+  SPRING_CLOUD_GATEWAY_ROUTES_1_URI: "http://auth-service:80" # auth-service.yaml의 Service 이름
+  SPRING_CLOUD_GATEWAY_ROUTES_1_PREDICATES_0: "Path=/auth-service/**"
+
+  # 3. Excluded URLs (백엔드 application.yml과 동일하게)
+  APP_GATEWAY_EXCLUDEDURLS: "/user-service/welcome,/actuator,/user-service/swagger-ui/**,/user-service/v3/api-docs/**,/auth-service/swagger-ui/**,/auth-service/v3/api-docs/**,/auth-service/auth/signup,/auth-service/auth/login,/auth-service/auth/refresh,/auth-service/auth/logout,/auth-service/auth/check-username,/auth-service/auth/check-password,/auth-service/auth/find-username,/auth-service/auth/password-reset/send-code,/auth-service/auth/password-reset/verify-code,/auth-service/auth/password-reset/change,/auth-service/auth/email-verification/send,/auth-service/auth/email-verification/check,/auth-service/oauth2/authorization/**,/auth-service/login/oauth2/code/**"

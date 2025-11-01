@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-auth
+spec:
+  serviceName: "mysql-auth-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-auth
+  template:
+    metadata:
+      labels:
+        app: mysql-auth
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+              name: mysql
+          env:
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-service-config # auth-service용 ConfigMap
+                  key: MYSQL_AUTH_DATABASE
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: auth-service-credentials # auth-service용 Secret
+                  key: MYSQL_AUTH_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: auth-service-credentials # auth-service용 Secret
+                  key: MYSQL_AUTH_PASSWORD
+          envFrom:
+            - secretRef:
+                name: mysql-instance-credentials
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+            - name: init-db
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: init-db
+          configMap:
+            name: mysql-auth-initdb-config # auth-service용 init-db ConfigMap
+            defaultMode: 0755
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-persistent-storage
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: manual # auth-pv.yaml과 매칭
+        resources:
+          requests:
+            storage: 5Gi

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-auth-initdb-config
+data:
+  init.sh: |
+    #!/bin/bash
+    set -e
+    
+    mysql -u root -p"${MYSQL_ROOT_PASSWORD}" <<-EOSQL
+      CREATE DATABASE IF NOT EXISTS \`${MYSQL_AUTH_DATABASE}\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+      CREATE USER IF NOT EXISTS '${MYSQL_AUTH_USER}'@'%' IDENTIFIED BY '${MYSQL_AUTH_PASSWORD}';
+      GRANT ALL PRIVILEGES ON \`${MYSQL_AUTH_DATABASE}\`.* TO '${MYSQL_AUTH_USER}'@'%';
+      FLUSH PRIVILEGES;
+    EOSQL

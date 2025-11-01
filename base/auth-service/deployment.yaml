@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-pod-label
+  template:
+    metadata:
+      labels:
+        app: auth-pod-label
+    spec:
+      containers:
+        - name: auth-container
+          image: h6bro/service-auth # CI/CD가 업데이트할 이미지 이름
+          ports:
+            - containerPort: 8081 # auth-service 포트
+          envFrom:
+            - configMapRef:
+                name: auth-service-config
+            - secretRef:
+                name: auth-service-credentials # auth-service용 시크릿

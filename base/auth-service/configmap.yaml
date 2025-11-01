@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-service-config
+  namespace: linkfolio
+data:
+  # DB
+  DB_HOST: "mysql-auth-service:3306"
+  MYSQL_AUTH_DATABASE: "auth_db" # auth-service 전용 DB
+  JPA_DDL_AUTO: "update" # create 대신 update 사용 권장
+  JPA_SHOW_SQL: "true"
+  JPA_FORMAT_SQL: "true"
+
+  # Redis
+  REDIS_HOST: "redis-auth-service"
+  REDIS_PORT: "6379"
+
+  # Mail
+  SPRING_MAIL_HOST: "smtp.gmail.com"
+  SPRING_MAIL_PORT: "587"
+  SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: "true"
+  SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: "true"
+  SPRING_MAIL_FROM: "no-reply@linkfolio.com"
+  SPRING_MAIL_FROM_NAME: "LinkFolio"
+
+  # OAuth & Frontend
+  APP_FRONTEND_REDIRECT_URL: "http://127.0.0.1:5173/auth/callback"
+  APP_OAUTH_REDIRECT_BASE_URL: "http://linkfolio.127.0.0.1.nip.io"
+  LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: "DEBUG"
