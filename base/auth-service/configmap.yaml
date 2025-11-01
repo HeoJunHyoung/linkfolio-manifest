@@ -6,7 +6,7 @@ metadata:
 data:
   # DB
   DB_HOST: "mysql-auth-service:3306"
-  MYSQL_AUTH_DATABASE: "auth_db" # auth-service 전용 DB
+  MYSQL_DATABASE: "auth_db" # auth-service 전용 DB
   JPA_DDL_AUTO: "update" # create 대신 update 사용 권장
   JPA_SHOW_SQL: "true"
   JPA_FORMAT_SQL: "true"
