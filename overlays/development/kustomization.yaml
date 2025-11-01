@@ -2,23 +2,23 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ingress.yaml
-  - ../../base
+- ingress.yaml
+- ../../base
 images:
-  - name: h6bro/service-apigateway
-    newName: h6bro/service-apigateway
-    newTag: 200f9bb
-  - name: h6bro/service-user
-    newName: h6bro/service-user
-    newTag: 200f9bb
-  - name: h6bro/service-auth
-    newName: h6bro/service-auth
-    newTag: 200f9bb
+- name: h6bro/service-apigateway
+  newName: h6bro/service-apigateway
+  newTag: 4124c15
+- name: h6bro/service-auth
+  newName: h6bro/service-auth
+  newTag: 4124c15
+- name: h6bro/service-user
+  newName: h6bro/service-user
+  newTag: 4124c15
 
 
 # ngrok을 사용하지 않는 로컬 실행 환경이라면, 아래 내용 주석 !!!
 patches:
-  - path: patch-auth-configmap-ngrok.yaml # 파일명 변경
-    target:
-      kind: ConfigMap
-      name: auth-service-config # user-service가 아닌 auth-service의 ConfigMap을 패치
+- path: patch-auth-configmap-ngrok.yaml
+  target:
+    kind: ConfigMap
+    name: auth-service-config
