@@ -10,10 +10,7 @@ data:
   JPA_SHOW_SQL: "true"
   JPA_FORMAT_SQL: "true"
 
-  GRPC_CLIENT_ORDER_SERVICE_ADDRESS: "static://order-service:9099"
-  APP_FRONTEND_REDIRECT_URL: "http://127.0.0.1:5173/auth/callback"
-
   REDIS_HOST: "redis-user-service"
   REDIS_PORT: "6379"
 
-  APP_VERIFICATION_CODE_EXPIRATION_MINUTES: "3"
+  # GRPC_CLIENT_ORDER_SERVICE_ADDRESS: "static://order-service:9099"
