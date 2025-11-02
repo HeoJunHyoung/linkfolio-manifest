@@ -29,12 +29,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: auth-service-credentials # auth-service용 Secret
-                  key: MYSQL_AUTH_USER
+                  key: MYSQL_USER
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: auth-service-credentials # auth-service용 Secret
-                  key: MYSQL_AUTH_PASSWORD
+                  key: MYSQL_PASSWORD
           envFrom:
             - secretRef:
                 name: mysql-instance-credentials
