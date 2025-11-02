@@ -24,7 +24,7 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: auth-service-config # auth-service용 ConfigMap
-                  key: MYSQL_AUTH_DATABASE
+                  key: MYSQL_DATABASE
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
