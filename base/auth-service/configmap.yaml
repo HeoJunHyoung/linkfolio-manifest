@@ -25,7 +25,7 @@ data:
 
   # OAuth & Frontend
 #  APP_FRONTEND_REDIRECT_URL: "http://127.0.0.1:5173/auth/callback"
-  APP_FRONTEND_REDIRECT_URL: "https://linkfolio.vercel.app/auth/callback"
+  APP_FRONTEND_REDIRECT_URL: "https://linkfolio-three.vercel.app/auth/callback"
   APP_OAUTH_REDIRECT_BASE_URL: "http://linkfolio.127.0.0.1.nip.io"
   LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: "DEBUG"
 
