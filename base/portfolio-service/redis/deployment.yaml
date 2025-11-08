@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-portfolio-deployment
+  namespace: linkfolio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-portfolio
+  template:
+    metadata:
+      labels:
+        app: redis-portfolio
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine # 경량화된 최신 Redis 이미지
+          ports:
+            - containerPort: 6379
