@@ -14,6 +14,9 @@ images:
 - name: h6bro/service-user
   newName: h6bro/service-user
   newTag: 07a8469
+- name: h6bro/service-portfolio
+  newName: h6bro/service-portfolio
+  newTag: eb56875
 
 
 # ngrok을 사용하지 않는 로컬 실행 환경이라면, 아래 내용 주석 !!!

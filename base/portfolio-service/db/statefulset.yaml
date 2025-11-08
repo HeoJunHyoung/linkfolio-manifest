@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-portfolio
+spec:
+  serviceName: "mysql-portfolio-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-portfolio
+  template:
+    metadata:
+      labels:
+        app: mysql-portfolio
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+              name: mysql
+          env:
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: portfolio-service-config # portfolio-service용 ConfigMap
+                  key: MYSQL_DATABASE
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: portfolio-service-credentials # portfolio-service용 Secret
+                  key: MYSQL_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: portfolio-service-credentials # portfolio-service용 Secret
+                  key: MYSQL_PASSWORD
+          envFrom:
+            - secretRef:
+                name: mysql-instance-credentials # 공용 Root 비밀번호
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+            - name: init-db
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: init-db
+          configMap:
+            name: mysql-portfolio-initdb-config # portfolio-service용 init-db
+            defaultMode: 0755
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-persistent-storage
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: manual # portfolio-pv.yaml과 매칭
+        resources:
+          requests:
+            storage: 5Gi

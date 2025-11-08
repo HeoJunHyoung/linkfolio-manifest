@@ -6,4 +6,5 @@ resources:
   - ./apigateway
   - ./user-service
   - ./auth-service
+  - ./portfolio-service
   - rbac.yaml
