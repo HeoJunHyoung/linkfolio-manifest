@@ -6,7 +6,7 @@ metadata:
 data:
   DB_HOST: "mysql-user-service:3306"
   MYSQL_DATABASE: "user_db" # DB 이름
-  JPA_DDL_AUTO: "create"
+  JPA_DDL_AUTO: "update"
   JPA_SHOW_SQL: "true"
   JPA_FORMAT_SQL: "true"
 
