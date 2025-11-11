@@ -9,4 +9,4 @@ spec:
     - port: 6379
       targetPort: 6379
   selector:
-    app: redis-user # Deployment의 Pod 레이블과 일치
+    app: redis-portfolio # Deployment의 Pod 레이블과 일치
