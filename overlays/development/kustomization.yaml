@@ -7,16 +7,16 @@ resources:
 images:
 - name: h6bro/service-apigateway
   newName: h6bro/service-apigateway
-  newTag: f99c1da
+  newTag: e8fc1f6
 - name: h6bro/service-auth
   newName: h6bro/service-auth
-  newTag: f99c1da
+  newTag: e8fc1f6
 - name: h6bro/service-portfolio
   newName: h6bro/service-portfolio
-  newTag: f99c1da
+  newTag: e8fc1f6
 - name: h6bro/service-user
   newName: h6bro/service-user
-  newTag: f99c1da
+  newTag: e8fc1f6
 
 # ngrok을 사용하지 않는 로컬 실행 환경이라면, 아래 내용 주석 !!!
 patches:
