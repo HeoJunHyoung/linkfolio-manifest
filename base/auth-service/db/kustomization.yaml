@@ -4,3 +4,4 @@ resources:
   - statefulset.yaml
   - service.yaml
   - init-db-configmap.yaml
+  - external-service.yaml

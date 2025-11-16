@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - statefulset.yaml
   - service.yaml
-  - init-db-configmap.yaml # 👈 이 줄을 추가합니다.
+  - init-db-configmap.yaml
+  - external-service.yaml
