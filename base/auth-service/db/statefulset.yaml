@@ -16,15 +16,6 @@ spec:
       containers:
         - name: mysql
           image: mysql:8.0
-          command: ["mysqld"]
-          args: [
-            "--character-set-server=utf8mb4",
-            "--collation-server=utf8mb4_unicode_ci",
-            "--log-bin=mysql-bin",           # 1. Binlog 활성화
-            "--binlog-format=ROW",           # 2. Debezium이 요구하는 ROW 포맷
-            "--binlog-row-image=FULL",       # 3. 데이터 동기화에 필수인 FULL 이미지
-            "--server-id=101"                # 4. 고유 서버 ID (auth-db용)
-          ]
           ports:
             - containerPort: 3306
               name: mysql
@@ -52,11 +43,17 @@ spec:
               mountPath: /var/lib/mysql
             - name: init-db
               mountPath: /docker-entrypoint-initdb.d
+            - name: binlog-config
+              mountPath: /etc/mysql/conf.d/debezium.cnf
+              subPath: debezium.cnf
       volumes:
         - name: init-db
           configMap:
             name: mysql-auth-initdb-config # auth-service용 init-db ConfigMap
             defaultMode: 0755
+        - name: binlog-config
+          configMap:
+            name: mysql-auth-binlog-config
   volumeClaimTemplates:
     - metadata:
         name: mysql-persistent-storage

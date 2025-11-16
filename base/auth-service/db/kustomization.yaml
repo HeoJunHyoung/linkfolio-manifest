@@ -5,3 +5,4 @@ resources:
   - service.yaml
   - init-db-configmap.yaml
   - external-service.yaml
+  - binlog-configmap.yaml
