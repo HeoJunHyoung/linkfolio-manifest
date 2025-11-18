@@ -7,4 +7,5 @@ resources:
   - ./user-service
   - ./auth-service
   - ./portfolio-service
+  - ./chat-service
   - rbac.yaml

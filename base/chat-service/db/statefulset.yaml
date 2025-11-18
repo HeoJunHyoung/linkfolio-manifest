@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-chat
+  namespace: linkfolio
+spec:
+  serviceName: "mongodb-chat-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-chat
+  template:
+    metadata:
+      labels:
+        app: mongodb-chat
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:6.0 # 안정적인 버전 사용
+          ports:
+            - containerPort: 27017
+              name: mongo
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: chat-service-credentials # Secret에서 가져옴
+                  key: MONGO_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: chat-service-credentials
+                  key: MONGO_ROOT_PASSWORD
+          volumeMounts:
+            - name: mongodb-chat-storage
+              mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: mongodb-chat-storage
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: manual # PV와 매칭
+        resources:
+          requests:
+            storage: 5Gi

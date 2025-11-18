@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chat-service-config
+  namespace: linkfolio
+data:
+  # MongoDB Connection (admin DB에서 인증)
+  SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE: "admin"
+  SPRING_DATA_MONGODB_DATABASE: "chat_db"
+  SPRING_DATA_MONGODB_HOST: "mongodb-chat-service"
+  SPRING_DATA_MONGODB_PORT: "27017"
+
+  # Redis Connection (이전에 만든 redis-chat-service 사용)
+  SPRING_DATA_REDIS_HOST: "redis-chat-service"
+  SPRING_DATA_REDIS_PORT: "6379"
+
+  # Kafka (알림 전송 등을 위해 필요할 경우)
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: "10.0.2.9:9092"
