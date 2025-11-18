@@ -21,14 +21,14 @@ data:
 
   # 4. Chat Service Route
   SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_3_ID: "chat-service-route"
-  SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_3_URI: "http://chat-service:8080"
+  SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_3_URI: "http://chat-service:80"
   SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_3_PREDICATES_0: "Path=/chat-service/**"
 
   # 5. Chat Service (WebSocket)
   SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_4_ID: "chat-service-ws-route"
-  SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_4_URI: "http://chat-service:8080"
+  SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_4_URI: "http://chat-service:80"
   SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_4_PREDICATES_0: "Path=/ws-chat/**"
 
   # 4. Excluded URLs
   # [수정] Chat 관련해서 넣어야 할 듯?
-  APP_GATEWAY_EXCLUDEDURLS: "/user-service/welcome,/actuator,/v3/api-docs/**,/swagger-ui/**,/user-service/swagger-ui/**,/user-service/v3/api-docs/**,/auth-service/swagger-ui/**,/auth-service/v3/api-docs/**,/auth-service/auth/signup,/auth-service/auth/login,/auth-service/auth/refresh,/auth-service/auth/logout,/auth-service/auth/check-username,/auth-service/auth/check-password,/auth-service/auth/find-username,/auth-service/auth/password-reset/send-code,/auth-service/auth/password-reset/verify-code,/auth-service/auth/password-reset/change,/auth-service/auth/email-verification/send,/auth-service/auth/email-verification/check,/auth-service/oauth2/authorization/**,/auth-service/login/oauth2/code/**,/auth-service/error,/portfolio-service/portfolios,/portfolio-service/portfolios/{portfolioId:\\d+},/portfolio-service/swagger-ui/**,/portfolio-service/v3/api-docs/**"
+  APP_GATEWAY_EXCLUDEDURLS: "/user-service/welcome,/actuator,/v3/api-docs/**,/swagger-ui/**,/user-service/swagger-ui/**,/user-service/v3/api-docs/**,/auth-service/swagger-ui/**,/auth-service/v3/api-docs/**,/auth-service/auth/signup,/auth-service/auth/login,/auth-service/auth/refresh,/auth-service/auth/logout,/auth-service/auth/check-username,/auth-service/auth/check-password,/auth-service/auth/find-username,/auth-service/auth/password-reset/send-code,/auth-service/auth/password-reset/verify-code,/auth-service/auth/password-reset/change,/auth-service/auth/email-verification/send,/auth-service/auth/email-verification/check,/auth-service/oauth2/authorization/**,/auth-service/login/oauth2/code/**,/auth-service/error,/portfolio-service/portfolios,/portfolio-service/portfolios/{portfolioId:\\d+},/portfolio-service/swagger-ui/**,/portfolio-service/v3/api-docs/**,/ws-chat/**"
