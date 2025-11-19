@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-chat-service
+  namespace: linkfolio
+spec:
+  type: ClusterIP
+  selector:
+    app: redis-chat
+  ports:
+    - port: 6379
+      targetPort: 6379

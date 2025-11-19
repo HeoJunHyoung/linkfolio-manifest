@@ -4,3 +4,4 @@ resources:
   - user-pv.yaml
   - auth-pv.yaml
   - portfolio-pv.yaml
+  - chat-mongodb-pv.yaml

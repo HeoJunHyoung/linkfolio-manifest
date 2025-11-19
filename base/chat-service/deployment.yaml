@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-deployment
+  namespace: linkfolio
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: chat-pod-label
+  template:
+    metadata:
+      labels:
+        app: chat-pod-label
+    spec:
+      containers:
+        - name: chat-container
+          image: h6bro/service-chat # CI/CD 빌드 이미지
+          ports:
+            - containerPort: 8083
+          envFrom:
+            - configMapRef:
+                name: chat-service-config
+            - secretRef:
+                name: chat-service-credentials
