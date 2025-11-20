@@ -26,7 +26,7 @@ data:
 
   # 5. Chat Service (WebSocket)
   SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_4_ID: "chat-service-ws-route"
-  SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_4_URI: "http://chat-service:80"
+  SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_4_URI: "ws://chat-service:80"
   SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_4_PREDICATES_0: "Path=/ws-chat/**"
 
   # 4. Excluded URLs
