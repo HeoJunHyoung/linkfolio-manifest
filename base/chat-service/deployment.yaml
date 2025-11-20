@@ -18,6 +18,19 @@ spec:
           image: h6bro/service-chat # CI/CD 빌드 이미지
           ports:
             - containerPort: 8083
+
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME   # 앱(application.yml)이 찾는 변수명
+              valueFrom:
+                secretKeyRef:
+                  name: chat-service-credentials
+                  key: MONGO_ROOT_USERNAME       # 실제 Secret에 저장된 키 이름
+            - name: MONGO_INITDB_ROOT_PASSWORD   # 앱(application.yml)이 찾는 변수명
+              valueFrom:
+                secretKeyRef:
+                  name: chat-service-credentials
+                  key: MONGO_ROOT_PASSWORD       # 실제 Secret에 저장된 키 이름
+
           envFrom:
             - configMapRef:
                 name: chat-service-config
