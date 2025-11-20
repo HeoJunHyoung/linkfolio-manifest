@@ -4,7 +4,7 @@ metadata:
   name: redis-insight-service
   namespace: linkfolio
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: redis-insight
   ports:
