@@ -20,6 +20,9 @@ images:
 - name: h6bro/service-user
   newName: h6bro/service-user
   newTag: bd19da7
+- name: h6bro/service-support
+  newName: h6bro/service-support
+  newTag: bd19da7
 
 # ngrok을 사용하지 않는 로컬 실행 환경이라면, 아래 내용 주석 !!!
 patches:

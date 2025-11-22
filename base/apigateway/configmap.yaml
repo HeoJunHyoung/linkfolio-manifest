@@ -29,5 +29,10 @@ data:
   SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_4_URI: "ws://chat-service:80"
   SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_4_PREDICATES_0: "Path=/chat-service/ws-chat/**"
 
+  # 6. Support Service Route
+  SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_5_ID: "support-service-route"
+  SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_5_URI: "http://support-service:80"
+  SPRING_CLOUD_GATEWAY_SERVER_WEBFLUX_ROUTES_5_PREDICATES_0: "Path=/support-service/**"
+
   # 4. Excluded URLs
-  APP_GATEWAY_EXCLUDEDURLS: "/user-service/welcome,/actuator,/v3/api-docs/**,/swagger-ui/**,/user-service/swagger-ui/**,/user-service/v3/api-docs/**,/auth-service/swagger-ui/**,/auth-service/v3/api-docs/**,/auth-service/auth/signup,/auth-service/auth/login,/auth-service/auth/refresh,/auth-service/auth/logout,/auth-service/auth/check-username,/auth-service/auth/check-password,/auth-service/auth/find-username,/auth-service/auth/password-reset/send-code,/auth-service/auth/password-reset/verify-code,/auth-service/auth/password-reset/change,/auth-service/auth/email-verification/send,/auth-service/auth/email-verification/check,/auth-service/oauth2/authorization/**,/auth-service/login/oauth2/code/**,/auth-service/error,/portfolio-service/portfolios,/portfolio-service/portfolios/{portfolioId:\\d+},/portfolio-service/swagger-ui/**,/portfolio-service/v3/api-docs/**"
+  APP_GATEWAY_EXCLUDEDURLS: "/user-service/welcome,/actuator,/v3/api-docs/**,/swagger-ui/**,/user-service/swagger-ui/**,/user-service/v3/api-docs/**,/auth-service/swagger-ui/**,/auth-service/v3/api-docs/**,/auth-service/auth/signup,/auth-service/auth/login,/auth-service/auth/refresh,/auth-service/auth/logout,/auth-service/auth/check-username,/auth-service/auth/check-password,/auth-service/auth/find-username,/auth-service/auth/password-reset/send-code,/auth-service/auth/password-reset/verify-code,/auth-service/auth/password-reset/change,/auth-service/auth/email-verification/send,/auth-service/auth/email-verification/check,/auth-service/oauth2/authorization/**,/auth-service/login/oauth2/code/**,/auth-service/error,/portfolio-service/portfolios,/portfolio-service/portfolios/{portfolioId:\\d+},/portfolio-service/swagger-ui/**,/portfolio-service/v3/api-docs/**,/support-service/notices,/support-service/notices/**,/support-service/faqs,/support-service/faqs/**,/support-service/v3/api-docs/**"
