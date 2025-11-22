@@ -17,7 +17,6 @@ data:
     
       USE \`${MYSQL_DATABASE}\`;
 
-      -- AuthUser 테이블 생성 (Entity와 일치)
       CREATE TABLE IF NOT EXISTS auth_user (
           user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
           username VARCHAR(255) UNIQUE,
@@ -32,10 +31,21 @@ data:
           last_modified_at DATETIME(6)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-      -- [Admin 계정 추가]
-      -- 비밀번호 'admin123!'의 BCrypt 해시값 사용
+      -- [Admin 계정 추가: AS 구문으로 컬럼명 명시]
       INSERT INTO auth_user (user_id, username, password, name, email, role, provider, status, created_at, last_modified_at)
-      SELECT * FROM (SELECT 1, 'admin', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVwdFqaBEC7GTt.j5.OotuZm', '관리자', 'admin@linkfolio.com', 'ADMIN', 'LOCAL', 'COMPLETED', NOW(), NOW()) AS tmp
+      SELECT * FROM (
+        SELECT 
+          1 AS user_id, 
+          'admin' AS username, 
+          '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVwdFqaBEC7GTt.j5.OotuZm' AS password, 
+          '관리자' AS name, 
+          'admin@linkfolio.com' AS email, 
+          'ADMIN' AS role, 
+          'LOCAL' AS provider, 
+          'COMPLETED' AS status, 
+          NOW() AS created_at, 
+          NOW() AS last_modified_at
+      ) AS tmp
       WHERE NOT EXISTS (SELECT username FROM auth_user WHERE username = 'admin') LIMIT 1;
 
       FLUSH PRIVILEGES;

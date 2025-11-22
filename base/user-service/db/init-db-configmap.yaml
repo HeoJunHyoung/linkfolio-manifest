@@ -17,7 +17,6 @@ data:
     
       USE \`${MYSQL_DATABASE}\`;
 
-      -- UserProfile 테이블 생성 (Entity와 일치)
       CREATE TABLE IF NOT EXISTS user_profile (
           user_id BIGINT PRIMARY KEY,
           username VARCHAR(255) UNIQUE,
@@ -32,10 +31,20 @@ data:
           last_modified_at DATETIME(6)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-      -- [Admin 프로필 추가]
-      -- Auth DB와 동일한 user_id = 1 사용
+      -- [Admin 프로필 추가: AS 구문으로 컬럼명 명시]
       INSERT INTO user_profile (user_id, username, name, email, role, provider, status, created_at, last_modified_at)
-      SELECT * FROM (SELECT 1, 'admin', '관리자', 'admin@linkfolio.com', 'ADMIN', 'LOCAL', 'COMPLETED', NOW(), NOW()) AS tmp
+      SELECT * FROM (
+        SELECT 
+          1 AS user_id, 
+          'admin' AS username, 
+          '관리자' AS name, 
+          'admin@linkfolio.com' AS email, 
+          'ADMIN' AS role, 
+          'LOCAL' AS provider, 
+          'COMPLETED' AS status, 
+          NOW() AS created_at, 
+          NOW() AS last_modified_at
+      ) AS tmp
       WHERE NOT EXISTS (SELECT user_id FROM user_profile WHERE user_id = 1) LIMIT 1;
 
       FLUSH PRIVILEGES;
