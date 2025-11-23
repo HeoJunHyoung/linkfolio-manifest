@@ -7,6 +7,9 @@ data:
     #!/bin/bash
     set -e
     
+    # <<-EOSQL (따옴표 없음)을 사용했으므로 내부의 ${MYSQL_...} 변수는 정상적으로 치환됩니다.
+    # 반면, 문자열로 쓰고 싶은 $는 \$로 이스케이프 해줘야 사라지지 않습니다.
+    
     mysql -u root -p"${MYSQL_ROOT_PASSWORD}" <<-EOSQL
       CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
       CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
@@ -31,13 +34,13 @@ data:
           last_modified_at DATETIME(6)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-      -- [Admin 계정 추가: AS 구문으로 컬럼명 명시]
+      -- [Admin 계정 추가]
       INSERT INTO auth_user (user_id, username, password, name, email, role, provider, status, created_at, last_modified_at)
       SELECT * FROM (
         SELECT 
           1 AS user_id, 
           'admin' AS username, 
-          '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVwdFqaBEC7GTt.j5.OotuZm' AS password, 
+          '\$2a\$10\$DT9v6GTb9QlvO4hXHV412ukUBn1Nh/1Q7Ky/2/R929PYNxRGcISMK' AS password, 
           '관리자' AS name, 
           'admin@linkfolio.com' AS email, 
           'ADMIN' AS role, 
