@@ -13,22 +13,22 @@ resources:
 images:
 - name: h6bro/service-apigateway
   newName: h6bro/service-apigateway
-  newTag: eb8c5c1
+  newTag: 95732b8
 - name: h6bro/service-auth
   newName: h6bro/service-auth
-  newTag: eb8c5c1
+  newTag: 95732b8
 - name: h6bro/service-chat
   newName: h6bro/service-chat
-  newTag: eb8c5c1
+  newTag: 95732b8
 - name: h6bro/service-portfolio
   newName: h6bro/service-portfolio
-  newTag: eb8c5c1
+  newTag: 95732b8
 - name: h6bro/service-support
   newName: h6bro/service-support
-  newTag: eb8c5c1
+  newTag: 95732b8
 - name: h6bro/service-user
   newName: h6bro/service-user
-  newTag: eb8c5c1
+  newTag: 95732b8
 
 # ngrok을 사용하지 않는 로컬 실행 환경이라면, 아래 내용 주석 !!!
 patches:
