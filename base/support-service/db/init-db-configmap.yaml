@@ -7,64 +7,9 @@ data:
     #!/bin/bash
     set -e
     
-    # 1. DB 및 사용자 생성 (기존 로직)
     mysql -u root -p"${MYSQL_ROOT_PASSWORD}" <<-EOSQL
       CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
       CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
       GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
       FLUSH PRIVILEGES;
-    
-      -- 2. 테이블 생성 및 데이터 삽입을 위해 DB 선택
-      USE \`${MYSQL_DATABASE}\`;
-
-      -- Notice 테이블 생성 (엔티티와 매핑)
-      CREATE TABLE IF NOT EXISTS notice (
-          id BIGINT AUTO_INCREMENT PRIMARY KEY,
-          title VARCHAR(200) NOT NULL,
-          content LONGTEXT NOT NULL,
-          is_important BOOLEAN NOT NULL,
-          created_at DATETIME(6),
-          last_modified_at DATETIME(6)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-      -- FAQ 테이블 생성 (엔티티와 매핑)
-      CREATE TABLE IF NOT EXISTS faq (
-          id BIGINT AUTO_INCREMENT PRIMARY KEY,
-          category VARCHAR(50) NOT NULL,
-          question VARCHAR(255) NOT NULL,
-          answer LONGTEXT NOT NULL,
-          created_at DATETIME(6),
-          last_modified_at DATETIME(6)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-      -- 3. Notice 목 데이터 삽입 (이미 데이터가 있으면 건너뜀)
-      INSERT INTO notice (title, content, is_important, created_at, last_modified_at)
-      SELECT * FROM (SELECT '[점검] 서비스 정기 점검 안내', '안녕하세요. LinkFolio 팀입니다.\n쾌적한 서비스 제공을 위해 서버 점검이 진행될 예정입니다.\n일시: 2025-11-25 02:00 ~ 04:00', true, NOW(), NOW()) AS tmp
-      WHERE NOT EXISTS (SELECT title FROM notice WHERE title = '[점검] 서비스 정기 점검 안내') LIMIT 1;
-
-      INSERT INTO notice (title, content, is_important, created_at, last_modified_at)
-      SELECT * FROM (SELECT 'LinkFolio 정식 오픈 이벤트!', 'LinkFolio가 드디어 정식 오픈했습니다!\n포트폴리오를 등록하고 스타벅스 쿠폰 받아가세요!', false, NOW(), NOW()) AS tmp
-      WHERE NOT EXISTS (SELECT title FROM notice WHERE title = 'LinkFolio 정식 오픈 이벤트!') LIMIT 1;
-
-      -- 4. FAQ 목 데이터 삽입
-      -- ACCOUNT
-      INSERT INTO faq (category, question, answer, created_at, last_modified_at)
-      SELECT * FROM (SELECT 'ACCOUNT', '비밀번호를 잊어버렸어요.', '로그인 페이지 하단의 [비밀번호 재설정] 링크를 통해 이메일 인증 후 비밀번호를 변경하실 수 있습니다.', NOW(), NOW()) AS tmp
-      WHERE NOT EXISTS (SELECT question FROM faq WHERE question = '비밀번호를 잊어버렸어요.') LIMIT 1;
-
-      -- PORTFOLIO
-      INSERT INTO faq (category, question, answer, created_at, last_modified_at)
-      SELECT * FROM (SELECT 'PORTFOLIO', '포트폴리오 공개 설정은 어떻게 하나요?', '마이페이지 > 포트폴리오 관리 > [공개/비공개] 토글 버튼을 통해 설정을 변경하실 수 있습니다.', NOW(), NOW()) AS tmp
-      WHERE NOT EXISTS (SELECT question FROM faq WHERE question = '포트폴리오 공개 설정은 어떻게 하나요?') LIMIT 1;
-
-      -- PAYMENT
-      INSERT INTO faq (category, question, answer, created_at, last_modified_at)
-      SELECT * FROM (SELECT 'PAYMENT', '결제 영수증은 어디서 확인하나요?', '결제 내역 페이지에서 해당 건을 클릭하시면 영수증 조회 및 출력이 가능합니다.', NOW(), NOW()) AS tmp
-      WHERE NOT EXISTS (SELECT question FROM faq WHERE question = '결제 영수증은 어디서 확인하나요?') LIMIT 1;
-    
-      -- ETC
-      INSERT INTO faq (category, question, answer, created_at, last_modified_at)
-      SELECT * FROM (SELECT 'ETC', '회원 탈퇴는 어떻게 하나요?', '마이페이지 > 계정 설정 > 하단의 [회원 탈퇴] 버튼을 눌러 진행하실 수 있습니다. 탈퇴 시 모든 데이터는 삭제됩니다.', NOW(), NOW()) AS tmp
-      WHERE NOT EXISTS (SELECT question FROM faq WHERE question = '회원 탈퇴는 어떻게 하나요?') LIMIT 1;
-
     EOSQL
