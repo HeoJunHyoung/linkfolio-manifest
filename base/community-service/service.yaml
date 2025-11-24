@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: community-service
+spec:
+  selector:
+    app: community-pod-label
+  ports:
+    - port: 80
+      targetPort: 8085 # application.yml에 설정된 포트

@@ -9,4 +9,5 @@ resources:
   - ./portfolio-service
   - ./chat-service
   - ./support-service
+  - ./community-service
   - rbac.yaml

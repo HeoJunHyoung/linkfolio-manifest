@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: community-service-config
+  namespace: linkfolio
+data:
+  # DB
+  DB_HOST: "mysql-community-service:3306"
+  MYSQL_DATABASE: "community_db"
+  JPA_DDL_AUTO: "update"
+  JPA_SHOW_SQL: "true"
+  JPA_FORMAT_SQL: "true"
+
+  # Redis
+  REDIS_HOST: "redis-community-service"
+  REDIS_PORT: "6379"
+
+  # Kafka
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: "10.0.2.9:9092"
+  SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS: "10.0.2.9:9092"
+
+  # Feign Clients
+  APP_FEIGN_USER_SERVICE_URL: "http://user-service:80"
+  APP_FEIGN_CHAT_SERVICE_URL: "http://chat-service:80"
