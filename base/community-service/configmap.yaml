@@ -20,5 +20,4 @@ data:
   SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS: "10.0.2.9:9092"
 
   # Feign Clients
-  APP_FEIGN_USER_SERVICE_URL: "http://user-service:80"
-  APP_FEIGN_CHAT_SERVICE_URL: "http://chat-service:80"
+  APP_FEIGN_CHAT_SERVICE_URL: "http://chat-service:80/chat-service"
