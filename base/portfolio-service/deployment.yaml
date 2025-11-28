@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: portfolio-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: portfolio-pod-label
@@ -17,6 +17,13 @@ spec:
           image: h6bro/service-portfolio # CI/CD가 관리할 이미지
           ports:
             - containerPort: 8082 # portfolio-service 포트
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           envFrom:
             - configMapRef:
                 name: portfolio-service-config

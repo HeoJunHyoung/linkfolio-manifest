@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: auth-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: auth-pod-label
@@ -17,6 +17,13 @@ spec:
           image: h6bro/service-auth # CI/CD가 업데이트할 이미지 이름
           ports:
             - containerPort: 8081 # auth-service 포트
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           envFrom:
             - configMapRef:
                 name: auth-service-config

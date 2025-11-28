@@ -4,7 +4,7 @@ metadata:
   name: chat-deployment
   namespace: linkfolio
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: chat-pod-label
@@ -18,7 +18,13 @@ spec:
           image: h6bro/service-chat # CI/CD 빌드 이미지
           ports:
             - containerPort: 8083
-
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: MONGO_INITDB_ROOT_USERNAME   # 앱(application.yml)이 찾는 변수명
               valueFrom:
