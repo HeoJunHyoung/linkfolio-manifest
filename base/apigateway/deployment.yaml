@@ -24,11 +24,11 @@ spec:
             - containerPort: 8000
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "250m"
+              memory: "256Mi" # 최소 구동 보장
+              cpu: "50m"      # 스케줄링 성공을 위해 낮게 유지
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "512Mi" # Spring Boot 구동 시 튀는 메모리 허용
+              cpu: "500m"     # 초기 구동 시 CPU를 좀 더 쓸 수 있게 여유 둠
           envFrom:
             - configMapRef:
                 name: apigateway-config
