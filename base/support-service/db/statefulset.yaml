@@ -12,6 +12,9 @@ spec:
     metadata:
       labels:
         app: mysql-support
+      annotations: # [Monitoring] Prometheus Exporter 설정
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9104"
     spec:
       containers:
         - name: mysql
@@ -43,6 +46,19 @@ spec:
               mountPath: /var/lib/mysql
             - name: init-db
               mountPath: /docker-entrypoint-initdb.d
+
+        # [Monitoring] MySQL Exporter Container 추가
+        - name: mysqld-exporter
+          image: prom/mysqld-exporter:v0.15.1
+          ports:
+            - containerPort: 9104
+          env:
+            - name: DATA_SOURCE_NAME
+              value: "root:$(MYSQL_ROOT_PASSWORD)@(localhost:3306)/"
+          envFrom:
+            - secretRef:
+                name: mysql-instance-credentials
+
       volumes:
         - name: init-db
           configMap:

@@ -12,6 +12,9 @@ spec:
     metadata:
       labels:
         app: mysql-user
+      annotations: # [Monitoring] Prometheus Exporter 설정
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9104"
     spec:
       containers:
         - name: mysql
@@ -33,7 +36,7 @@ spec:
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: user-service-credentials # 👈 user-service용 Secret
+                  name: user-service-credentials # user-service용 Secret
                   key: MYSQL_PASSWORD
           envFrom:
             - secretRef:
@@ -46,6 +49,19 @@ spec:
             - name: binlog-config
               mountPath: /etc/mysql/conf.d/debezium.cnf
               subPath: debezium.cnf
+
+        # [Monitoring] MySQL Exporter Container 추가
+        - name: mysqld-exporter
+          image: prom/mysqld-exporter:v0.15.1
+          ports:
+            - containerPort: 9104
+          env:
+            - name: DATA_SOURCE_NAME
+              value: "root:$(MYSQL_ROOT_PASSWORD)@(localhost:3306)/"
+          envFrom:
+            - secretRef:
+                name: mysql-instance-credentials
+
       volumes:
         - name: init-db
           configMap:
