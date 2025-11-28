@@ -11,6 +11,11 @@ spec:
     metadata:
       labels:
         app: auth-pod-label
+      # --- Monitoring Annotations ---
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/auth-service/actuator/prometheus"
+        prometheus.io/port: "8081"
     spec:
       containers:
         - name: auth-container

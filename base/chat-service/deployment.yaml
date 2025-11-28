@@ -12,6 +12,11 @@ spec:
     metadata:
       labels:
         app: chat-pod-label
+      # --- Monitoring Annotations ---
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/chat-service/actuator/prometheus"
+        prometheus.io/port: "8083"
     spec:
       containers:
         - name: chat-container

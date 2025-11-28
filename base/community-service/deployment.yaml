@@ -11,6 +11,11 @@ spec:
     metadata:
       labels:
         app: community-pod-label
+      # --- Monitoring Annotations ---
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/community-service/actuator/prometheus"
+        prometheus.io/port: "8085"
     spec:
       containers:
         - name: community-container

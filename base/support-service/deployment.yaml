@@ -11,6 +11,11 @@ spec:
     metadata:
       labels:
         app: support-pod-label
+      # --- Monitoring Annotations ---
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/support-service/actuator/prometheus"
+        prometheus.io/port: "8084"
     spec:
       containers:
         - name: support-container
