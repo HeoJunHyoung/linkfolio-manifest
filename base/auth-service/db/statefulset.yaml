@@ -16,6 +16,24 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9104"
     spec:
+      # [1] InitContainer 추가: Exporter용 설정 파일(.my.cnf) 생성
+      initContainers:
+        - name: exporter-config-init
+          image: busybox
+          command: ["sh", "-c"]
+          args:
+            - |
+              printf "[client]\nuser=root\npassword=%s\nhost=127.0.0.1\nport=3306\n" "$MYSQL_ROOT_PASSWORD" > /etc/mysqld-exporter/.my.cnf
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-instance-credentials
+                  key: MYSQL_ROOT_PASSWORD
+          volumeMounts:
+            - name: exporter-config
+              mountPath: /etc/mysqld-exporter
+
       containers:
         - name: mysql
           image: mysql:8.0
@@ -50,21 +68,16 @@ spec:
               mountPath: /etc/mysql/conf.d/debezium.cnf
               subPath: debezium.cnf
 
-        # [Monitoring] MySQL Exporter Container (수정됨)
+        # [2] MySQL Exporter 수정: 설정 파일 사용
         - name: mysqld-exporter
           image: prom/mysqld-exporter:v0.15.1
           ports:
             - containerPort: 9104
-          env:
-            # 1. Secret에서 명시적으로 Root Password 가져오기
-            - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-instance-credentials
-                  key: MYSQL_ROOT_PASSWORD
-            # 2. 가져온 환경변수를 사용하여 Connection String 구성
-            - name: DATA_SOURCE_NAME
-              value: "root:$(MYSQL_ROOT_PASSWORD)@(localhost:3306)/"
+          args:
+            - "--config.my-cnf=/etc/mysqld-exporter/.my.cnf"
+          volumeMounts:
+            - name: exporter-config
+              mountPath: /etc/mysqld-exporter
 
       volumes:
         - name: init-db
@@ -74,6 +87,10 @@ spec:
         - name: binlog-config
           configMap:
             name: mysql-auth-binlog-config
+        # [3] 공유 볼륨 추가
+        - name: exporter-config
+          emptyDir: {}
+
   volumeClaimTemplates:
     - metadata:
         name: mysql-persistent-storage

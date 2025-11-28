@@ -16,6 +16,23 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9104"
     spec:
+      initContainers:
+        - name: exporter-config-init
+          image: busybox
+          command: ["sh", "-c"]
+          args:
+            - |
+              printf "[client]\nuser=root\npassword=%s\nhost=127.0.0.1\nport=3306\n" "$MYSQL_ROOT_PASSWORD" > /etc/mysqld-exporter/.my.cnf
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-instance-credentials
+                  key: MYSQL_ROOT_PASSWORD
+          volumeMounts:
+            - name: exporter-config
+              mountPath: /etc/mysqld-exporter
+
       containers:
         - name: mysql
           image: mysql:8.0
@@ -47,25 +64,24 @@ spec:
             - name: init-db
               mountPath: /docker-entrypoint-initdb.d
 
-        # [Monitoring] MySQL Exporter Container (수정됨)
         - name: mysqld-exporter
           image: prom/mysqld-exporter:v0.15.1
           ports:
             - containerPort: 9104
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-instance-credentials
-                  key: MYSQL_ROOT_PASSWORD
-            - name: DATA_SOURCE_NAME
-              value: "root:$(MYSQL_ROOT_PASSWORD)@(localhost:3306)/"
+          args:
+            - "--config.my-cnf=/etc/mysqld-exporter/.my.cnf"
+          volumeMounts:
+            - name: exporter-config
+              mountPath: /etc/mysqld-exporter
 
       volumes:
         - name: init-db
           configMap:
             name: mysql-community-initdb-config
             defaultMode: 0755
+        - name: exporter-config
+          emptyDir: {}
+
   volumeClaimTemplates:
     - metadata:
         name: mysql-persistent-storage
