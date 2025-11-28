@@ -26,17 +26,17 @@ spec:
             - name: MYSQL_DATABASE
               valueFrom:
                 configMapKeyRef:
-                  name: auth-service-config # auth-service용 ConfigMap
+                  name: auth-service-config
                   key: MYSQL_DATABASE
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
-                  name: auth-service-credentials # auth-service용 Secret
+                  name: auth-service-credentials
                   key: MYSQL_USER
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: auth-service-credentials # auth-service용 Secret
+                  name: auth-service-credentials
                   key: MYSQL_PASSWORD
           envFrom:
             - secretRef:
@@ -50,22 +50,26 @@ spec:
               mountPath: /etc/mysql/conf.d/debezium.cnf
               subPath: debezium.cnf
 
-        # [Monitoring] MySQL Exporter Container 추가
+        # [Monitoring] MySQL Exporter Container (수정됨)
         - name: mysqld-exporter
           image: prom/mysqld-exporter:v0.15.1
           ports:
             - containerPort: 9104
           env:
+            # 1. Secret에서 명시적으로 Root Password 가져오기
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-instance-credentials
+                  key: MYSQL_ROOT_PASSWORD
+            # 2. 가져온 환경변수를 사용하여 Connection String 구성
             - name: DATA_SOURCE_NAME
               value: "root:$(MYSQL_ROOT_PASSWORD)@(localhost:3306)/"
-          envFrom:
-            - secretRef:
-                name: mysql-instance-credentials # root 비밀번호 가져오기
 
       volumes:
         - name: init-db
           configMap:
-            name: mysql-auth-initdb-config # auth-service용 init-db ConfigMap
+            name: mysql-auth-initdb-config
             defaultMode: 0755
         - name: binlog-config
           configMap:
@@ -75,7 +79,7 @@ spec:
         name: mysql-persistent-storage
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: manual # auth-pv.yaml과 매칭
+        storageClassName: manual
         resources:
           requests:
             storage: 5Gi

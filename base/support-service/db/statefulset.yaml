@@ -40,24 +40,26 @@ spec:
                   key: MYSQL_PASSWORD
           envFrom:
             - secretRef:
-                name: mysql-instance-credentials # 공용 Root 비밀번호
+                name: mysql-instance-credentials
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
             - name: init-db
               mountPath: /docker-entrypoint-initdb.d
 
-        # [Monitoring] MySQL Exporter Container 추가
+        # [Monitoring] MySQL Exporter Container (수정됨)
         - name: mysqld-exporter
           image: prom/mysqld-exporter:v0.15.1
           ports:
             - containerPort: 9104
           env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-instance-credentials
+                  key: MYSQL_ROOT_PASSWORD
             - name: DATA_SOURCE_NAME
               value: "root:$(MYSQL_ROOT_PASSWORD)@(localhost:3306)/"
-          envFrom:
-            - secretRef:
-                name: mysql-instance-credentials
 
       volumes:
         - name: init-db

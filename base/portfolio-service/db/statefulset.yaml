@@ -26,50 +26,52 @@ spec:
             - name: MYSQL_DATABASE
               valueFrom:
                 configMapKeyRef:
-                  name: portfolio-service-config # portfolio-service용 ConfigMap
+                  name: portfolio-service-config
                   key: MYSQL_DATABASE
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
-                  name: portfolio-service-credentials # portfolio-service용 Secret
+                  name: portfolio-service-credentials
                   key: MYSQL_USER
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: portfolio-service-credentials # portfolio-service용 Secret
+                  name: portfolio-service-credentials
                   key: MYSQL_PASSWORD
           envFrom:
             - secretRef:
-                name: mysql-instance-credentials # 공용 Root 비밀번호
+                name: mysql-instance-credentials
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
             - name: init-db
               mountPath: /docker-entrypoint-initdb.d
 
-        # [Monitoring] MySQL Exporter Container 추가
+        # [Monitoring] MySQL Exporter Container (수정됨)
         - name: mysqld-exporter
           image: prom/mysqld-exporter:v0.15.1
           ports:
             - containerPort: 9104
           env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-instance-credentials
+                  key: MYSQL_ROOT_PASSWORD
             - name: DATA_SOURCE_NAME
               value: "root:$(MYSQL_ROOT_PASSWORD)@(localhost:3306)/"
-          envFrom:
-            - secretRef:
-                name: mysql-instance-credentials
 
       volumes:
         - name: init-db
           configMap:
-            name: mysql-portfolio-initdb-config # portfolio-service용 init-db
+            name: mysql-portfolio-initdb-config
             defaultMode: 0755
   volumeClaimTemplates:
     - metadata:
         name: mysql-persistent-storage
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: manual # portfolio-pv.yaml과 매칭
+        storageClassName: manual
         resources:
           requests:
             storage: 5Gi
