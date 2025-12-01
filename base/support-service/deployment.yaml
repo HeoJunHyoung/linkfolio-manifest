@@ -24,11 +24,11 @@ spec:
             - containerPort: 8084 # application.yml의 port와 일치
           resources:
             requests:
-              memory: "256Mi" # 최소 구동 보장
-              cpu: "50m"      # 스케줄링 성공을 위해 낮게 유지
+              memory: "512Mi" # 최소 구동 보장
+              cpu: "200m"      # 스케줄링 성공을 위해 낮게 유지
             limits:
-              memory: "512Mi" # Spring Boot 구동 시 튀는 메모리 허용
-              cpu: "500m"     # 초기 구동 시 CPU를 좀 더 쓸 수 있게 여유 둠
+              memory: "1Gi" # Spring Boot 구동 시 튀는 메모리 허용
+              cpu: "1000m"     # 초기 구동 시 CPU를 좀 더 쓸 수 있게 여유 둠
           envFrom:
             - configMapRef:
                 name: support-service-config
