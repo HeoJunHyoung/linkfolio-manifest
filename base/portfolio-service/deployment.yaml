@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: portfolio-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: portfolio-pod-label
