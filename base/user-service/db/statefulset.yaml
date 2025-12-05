@@ -12,28 +12,28 @@ spec:
     metadata:
       labels:
         app: mysql-user
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "9104"
+      # [0] annotations 설정
+#      annotations:
+#        prometheus.io/scrape: "true"
+#        prometheus.io/port: "9104"
     spec:
       # [1] InitContainer 추가: Exporter용 설정 파일(.my.cnf) 생성
-      initContainers:
-        - name: exporter-config-init
-          image: busybox
-          command: ["sh", "-c"]
-          # printf를 사용하여 특수문자가 포함된 비밀번호를 안전하게 설정 파일로 기록
-          args:
-            - |
-              printf "[client]\nuser=root\npassword=%s\nhost=127.0.0.1\nport=3306\n" "$MYSQL_ROOT_PASSWORD" > /etc/mysqld-exporter/.my.cnf
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-instance-credentials
-                  key: MYSQL_ROOT_PASSWORD
-          volumeMounts:
-            - name: exporter-config
-              mountPath: /etc/mysqld-exporter
+#      initContainers:
+#        - name: exporter-config-init
+#          image: busybox
+#          command: ["sh", "-c"]
+#          args:
+#            - |
+#              printf "[client]\nuser=root\npassword=%s\nhost=127.0.0.1\nport=3306\n" "$MYSQL_ROOT_PASSWORD" > /etc/mysqld-exporter/.my.cnf
+#          env:
+#            - name: MYSQL_ROOT_PASSWORD
+#              valueFrom:
+#                secretKeyRef:
+#                  name: mysql-instance-credentials
+#                  key: MYSQL_ROOT_PASSWORD
+#          volumeMounts:
+#            - name: exporter-config
+#              mountPath: /etc/mysqld-exporter
 
       containers:
         - name: mysql
@@ -70,16 +70,15 @@ spec:
               subPath: debezium.cnf
 
         # [2] MySQL Exporter 수정: 설정 파일 사용
-        - name: mysqld-exporter
-          image: prom/mysqld-exporter:v0.15.1
-          ports:
-            - containerPort: 9104
-          # DATA_SOURCE_NAME 환경변수 제거 -> 설정 파일 인자 추가
-          args:
-            - "--config.my-cnf=/etc/mysqld-exporter/.my.cnf"
-          volumeMounts:
-            - name: exporter-config
-              mountPath: /etc/mysqld-exporter
+#        - name: mysqld-exporter
+#          image: prom/mysqld-exporter:v0.15.1
+#          ports:
+#            - containerPort: 9104
+#          args:
+#            - "--config.my-cnf=/etc/mysqld-exporter/.my.cnf"
+#          volumeMounts:
+#            - name: exporter-config
+#              mountPath: /etc/mysqld-exporter
 
       volumes:
         - name: init-db
@@ -90,8 +89,8 @@ spec:
           configMap:
             name: mysql-user-binlog-config
         # [3] 공유 볼륨 추가
-        - name: exporter-config
-          emptyDir: {}
+#        - name: exporter-config
+#          emptyDir: {}
 
   volumeClaimTemplates:
     - metadata:

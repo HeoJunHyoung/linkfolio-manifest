@@ -11,4 +11,4 @@ resources:
   - ./support-service
   - ./community-service
   - rbac.yaml
-  - ./monitoring
+#  - ./monitoring
