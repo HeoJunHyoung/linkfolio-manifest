@@ -1,9 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - user-pv.yaml
-  - auth-pv.yaml
-  - portfolio-pv.yaml
   - chat-mongodb-pv.yaml
-  - support-pv.yaml
-  - community-pv.yaml
+  - shared-mysql-pv.yaml
+  - shared-redis-pv.yaml

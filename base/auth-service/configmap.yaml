@@ -5,7 +5,7 @@ metadata:
   namespace: linkfolio
 data:
   # DB
-  DB_HOST: "mysql-auth-service:3306"
+  DB_HOST: "shared-mysql:3306"
   MYSQL_DATABASE: "auth_db" # auth-service 전용 DB
   JPA_DDL_AUTO: "update" # create 대신 update 사용 권장
   JPA_SHOW_SQL: "true"

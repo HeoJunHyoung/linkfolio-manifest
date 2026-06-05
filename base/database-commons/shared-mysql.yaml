@@ -1,0 +1,174 @@
+---
+# 1. Kafka CDC(Debezium)를 위한 통합 Binlog 설정 (server-id는 1로 통일)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shared-mysql-binlog-config
+data:
+  debezium.cnf: |
+    [mysqld]
+    server-id=1
+    log-bin=mysql-bin
+    binlog-format=ROW
+    binlog-row-image=FULL
+    expire_logs_days=10
+---
+# 2. 통합 DB 초기화 스크립트
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shared-mysql-init
+data:
+  init.sh: |
+    #!/bin/bash
+    set -e
+    
+    mysql -u root -p"${MYSQL_ROOT_PASSWORD}" <<-EOSQL
+      -- Step 1. 모든 서비스용 논리 스키마(Database) 생성
+      CREATE DATABASE IF NOT EXISTS auth_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+      CREATE DATABASE IF NOT EXISTS user_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+      CREATE DATABASE IF NOT EXISTS portfolio_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+      CREATE DATABASE IF NOT EXISTS community_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+      CREATE DATABASE IF NOT EXISTS support_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+      -- Step 2. 기존 sealed-secret 유지를 위한 개별 유저 생성 (비밀번호 평문 입력 필수)
+      CREATE USER IF NOT EXISTS 'auth_user'@'%' IDENTIFIED BY '[기존_AUTH_비밀번호]';
+      GRANT ALL PRIVILEGES ON auth_db.* TO 'auth_user'@'%';
+
+      CREATE USER IF NOT EXISTS 'user_user'@'%' IDENTIFIED BY '[기존_USER_비밀번호]';
+      GRANT ALL PRIVILEGES ON user_db.* TO 'user_user'@'%';
+
+      CREATE USER IF NOT EXISTS 'portfolio_user'@'%' IDENTIFIED BY '[기존_PORTFOLIO_비밀번호]';
+      GRANT ALL PRIVILEGES ON portfolio_db.* TO 'portfolio_user'@'%';
+
+      CREATE USER IF NOT EXISTS 'community_user'@'%' IDENTIFIED BY '[기존_COMMUNITY_비밀번호]';
+      GRANT ALL PRIVILEGES ON community_db.* TO 'community_user'@'%';
+
+      CREATE USER IF NOT EXISTS 'support_user'@'%' IDENTIFIED BY '[기존_SUPPORT_비밀번호]';
+      GRANT ALL PRIVILEGES ON support_db.* TO 'support_user'@'%';
+
+      -- Step 3. Kafka Debezium CDC 전용 권한
+      CREATE USER IF NOT EXISTS 'debezium_user'@'%' IDENTIFIED BY 'dbzpassword';
+      GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'debezium_user'@'%';
+
+      -- Step 4. Auth Service 초기 테이블 및 Admin 계정
+      USE auth_db;
+      CREATE TABLE IF NOT EXISTS auth_user (
+          user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+          username VARCHAR(255) UNIQUE,
+          password VARCHAR(255),
+          name VARCHAR(255),
+          email VARCHAR(255) NOT NULL UNIQUE,
+          role VARCHAR(50) NOT NULL,
+          provider VARCHAR(50) NOT NULL,
+          provider_id VARCHAR(255),
+          status VARCHAR(50) NOT NULL,
+          created_at DATETIME(6),
+          last_modified_at DATETIME(6)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+      INSERT INTO auth_user (user_id, username, password, name, email, role, provider, status, created_at, last_modified_at)
+      SELECT * FROM (
+        SELECT 1 AS user_id, 'admin' AS username, '\$2a\$10\$DT9v6GTb9QlvO4hXHV412ukUBn1Nh/1Q7Ky/2/R929PYNxRGcISMK' AS password, '관리자' AS name, 'admin@linkfolio.com' AS email, 'ADMIN' AS role, 'LOCAL' AS provider, 'COMPLETED' AS status, NOW() AS created_at, NOW() AS last_modified_at
+      ) AS tmp
+      WHERE NOT EXISTS (SELECT username FROM auth_user WHERE username = 'admin') LIMIT 1;
+
+      -- Step 5. User Service 초기 테이블 및 Admin 계정
+      USE user_db;
+      CREATE TABLE IF NOT EXISTS user_profile (
+          user_id BIGINT PRIMARY KEY,
+          username VARCHAR(255) UNIQUE,
+          name VARCHAR(255),
+          email VARCHAR(255) UNIQUE,
+          birthdate VARCHAR(255),
+          gender VARCHAR(50),
+          role VARCHAR(50) NOT NULL,
+          provider VARCHAR(50) NOT NULL,
+          status VARCHAR(50) NOT NULL,
+          created_at DATETIME(6),
+          last_modified_at DATETIME(6)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+      INSERT INTO user_profile (user_id, username, name, email, role, provider, status, created_at, last_modified_at)
+      SELECT * FROM (
+        SELECT 1 AS user_id, 'admin' AS username, '관리자' AS name, 'admin@linkfolio.com' AS email, 'ADMIN' AS role, 'LOCAL' AS provider, 'COMPLETED' AS status, NOW() AS created_at, NOW() AS last_modified_at
+      ) AS tmp
+      WHERE NOT EXISTS (SELECT user_id FROM user_profile WHERE user_id = 1) LIMIT 1;
+
+      FLUSH PRIVILEGES;
+    EOSQL
+---
+# 3. 통합 PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: shared-mysql-pv
+---
+# 4. 통합 Service (외부 Kafka 접근용 NodePort 30306 포함)
+apiVersion: v1
+kind: Service
+metadata:
+  name: shared-mysql
+spec:
+  type: NodePort
+  ports:
+    - port: 3306
+      targetPort: 3306
+      nodePort: 30306 
+  selector:
+    app: shared-mysql
+---
+# 5. 통합 StatefulSet
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: shared-mysql
+spec:
+  selector:
+    matchLabels:
+      app: shared-mysql
+  serviceName: shared-mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: shared-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-instance-credentials
+                  key: MYSQL_ROOT_PASSWORD
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d/init.sh
+              subPath: init.sh
+            - name: mysql-binlog-config
+              mountPath: /etc/mysql/conf.d/debezium.cnf
+              subPath: debezium.cnf
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: shared-mysql-pvc
+        - name: mysql-initdb
+          configMap:
+            name: shared-mysql-init
+            defaultMode: 0755
+        - name: mysql-binlog-config
+          configMap:
+            name: shared-mysql-binlog-config

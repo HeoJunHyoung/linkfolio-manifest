@@ -1,0 +1,50 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-redis-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  volumeName: shared-redis-pv
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shared-redis
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: shared-redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shared-redis
+spec:
+  selector:
+    matchLabels:
+      app: shared-redis
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: shared-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:6.2-alpine
+          command: ["redis-server", "--appendonly", "yes"]
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: shared-redis-pvc

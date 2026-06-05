@@ -5,7 +5,7 @@ metadata:
   namespace: linkfolio
 data:
   # DB
-  DB_HOST: "mysql-support-service:3306"
+  DB_HOST: "shared-mysql:3306"
   MYSQL_DATABASE: "support_db"
   JPA_DDL_AUTO: "update"
   JPA_SHOW_SQL: "true"
@@ -13,5 +13,5 @@ data:
   SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "30"
 
   # Redis
-  REDIS_HOST: "redis-support-service"
+  REDIS_HOST: "shared-redis"
   REDIS_PORT: "6379"
