@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkfolio-monitoring
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/HeoJunHyoung/linkfolio-manifest'
+    targetRevision: feature/unified-infra-app-of-apps
+    path: overlays/development/monitoring
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default # 업로드하신 base/monitoring 확인 결과 namespace가 default임
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

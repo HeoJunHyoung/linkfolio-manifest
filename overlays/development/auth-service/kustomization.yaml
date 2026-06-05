@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../base/auth-service
+
+images:
+  - name: h6bro/service-auth
+    newName: h6bro/service-auth
+    newTag: 8cf15bf
+
+patches:
+  - path: ../patch-auth-configmap-ngrok.yaml
+    target:
+      kind: ConfigMap
+      name: auth-service-config

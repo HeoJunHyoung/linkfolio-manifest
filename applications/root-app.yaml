@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkfolio-root-development
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/HeoJunHyoung/linkfolio-manifest'
+    targetRevision: feature/unified-infra-app-of-apps # 작업 브랜치 적용
+    path: applications/development-apps
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
