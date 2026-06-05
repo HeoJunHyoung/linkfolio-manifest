@@ -1,6 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - sealed-secret.yaml
+  - sealed-secret.yaml # 기존 root 비번용
+  - sealed-secret-services.yaml # 각 서비스 비번용 추가
   - shared-mysql.yaml
   - shared-redis.yaml

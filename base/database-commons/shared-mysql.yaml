@@ -31,21 +31,21 @@ data:
       CREATE DATABASE IF NOT EXISTS community_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
       CREATE DATABASE IF NOT EXISTS support_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-      -- Step 2. 기존 sealed-secret 유지를 위한 개별 유저 생성 (비밀번호 평문 입력 필수)
-      CREATE USER IF NOT EXISTS 'auth_user'@'%' IDENTIFIED BY '[기존_AUTH_비밀번호]';
-      GRANT ALL PRIVILEGES ON auth_db.* TO 'auth_user'@'%';
+      -- Step 2. 기존 sealed-secret 유지를 위한 개별 유저 생성 (환경변수로 주입된 암호 사용 및 정확한 유저명 매핑)
+      CREATE USER IF NOT EXISTS 'auth-service-db-user'@'%' IDENTIFIED BY "${AUTH_PWD}";
+      GRANT ALL PRIVILEGES ON auth_db.* TO 'auth-service-db-user'@'%';
 
-      CREATE USER IF NOT EXISTS 'user_user'@'%' IDENTIFIED BY '[기존_USER_비밀번호]';
-      GRANT ALL PRIVILEGES ON user_db.* TO 'user_user'@'%';
+      CREATE USER IF NOT EXISTS 'user-service-db-user'@'%' IDENTIFIED BY "${USER_PWD}";
+      GRANT ALL PRIVILEGES ON user_db.* TO 'user-service-db-user'@'%';
 
-      CREATE USER IF NOT EXISTS 'portfolio_user'@'%' IDENTIFIED BY '[기존_PORTFOLIO_비밀번호]';
-      GRANT ALL PRIVILEGES ON portfolio_db.* TO 'portfolio_user'@'%';
+      CREATE USER IF NOT EXISTS 'portfolio-service-db-user'@'%' IDENTIFIED BY "${PORTFOLIO_PWD}";
+      GRANT ALL PRIVILEGES ON portfolio_db.* TO 'portfolio-service-db-user'@'%';
 
-      CREATE USER IF NOT EXISTS 'community_user'@'%' IDENTIFIED BY '[기존_COMMUNITY_비밀번호]';
-      GRANT ALL PRIVILEGES ON community_db.* TO 'community_user'@'%';
+      CREATE USER IF NOT EXISTS 'community-service-db-user'@'%' IDENTIFIED BY "${COMMUNITY_PWD}";
+      GRANT ALL PRIVILEGES ON community_db.* TO 'community-service-db-user'@'%';
 
-      CREATE USER IF NOT EXISTS 'support_user'@'%' IDENTIFIED BY '[기존_SUPPORT_비밀번호]';
-      GRANT ALL PRIVILEGES ON support_db.* TO 'support_user'@'%';
+      CREATE USER IF NOT EXISTS 'support-service-db-user'@'%' IDENTIFIED BY "${SUPPORT_PWD}";
+      GRANT ALL PRIVILEGES ON support_db.* TO 'support-service-db-user'@'%';
 
       -- Step 3. Kafka Debezium CDC 전용 권한
       CREATE USER IF NOT EXISTS 'debezium_user'@'%' IDENTIFIED BY 'dbzpassword';
@@ -150,6 +150,32 @@ spec:
                 secretKeyRef:
                   name: mysql-instance-credentials
                   key: MYSQL_ROOT_PASSWORD
+            # 아래부터 방금 만든 Sealed Secret을 환경 변수로 매핑하는 설정입니다.
+            - name: AUTH_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-all-services-credentials
+                  key: AUTH_PASSWORD
+            - name: USER_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-all-services-credentials
+                  key: USER_PASSWORD
+            - name: PORTFOLIO_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-all-services-credentials
+                  key: PORTFOLIO_PASSWORD
+            - name: COMMUNITY_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-all-services-credentials
+                  key: COMMUNITY_PASSWORD
+            - name: SUPPORT_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-all-services-credentials
+                  key: SUPPORT_PASSWORD
           ports:
             - containerPort: 3306
           volumeMounts:
