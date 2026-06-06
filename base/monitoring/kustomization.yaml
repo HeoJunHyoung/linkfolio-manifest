@@ -5,3 +5,6 @@ resources:
   - prometheus-rbac.yaml
   - prometheus.yaml
   - grafana.yaml
+  - node-exporter.yaml  
+  - loki.yaml          
+  - promtail.yaml      
