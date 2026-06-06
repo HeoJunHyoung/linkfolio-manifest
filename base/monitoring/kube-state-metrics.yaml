@@ -1,3 +1,4 @@
+# base/monitoring/kube-state-metrics.yaml (전면 교체)
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -10,23 +11,71 @@ metadata:
   name: kube-state-metrics
 rules:
   - apiGroups: [""]
-    resources: [configmaps, secrets, nodes, pods, services, resourcequotas, replicationcontrollers, limitranges, persistentvolumeclaims, persistentvolumes, namespaces, endpoints]
-    verbs: [list, watch]
-  - apiGroups: [apps]
-    resources: [statefulsets, daemonsets, deployments, replicasets]
-    verbs: [list, watch]
-  - apiGroups: [batch]
-    resources: [cronjobs, jobs]
-    verbs: [list, watch]
-  - apiGroups: [autoscaling]
-    resources: [horizontalpodautoscalers]
-    verbs: [list, watch]
-  - apiGroups: [authentication.k8s.io]
-    resources: [tokenreviews]
-    verbs: [create]
-  - apiGroups: [authorization.k8s.io]
-    resources: [subjectaccessreviews]
-    verbs: [create]
+    resources:
+      - configmaps
+      - secrets
+      - nodes
+      - pods
+      - services
+      - resourcequotas
+      - replicationcontrollers
+      - limitranges
+      - persistentvolumeclaims
+      - persistentvolumes
+      - namespaces
+      - endpoints
+    verbs: ["list", "watch"]
+  - apiGroups: ["apps"]
+    resources:
+      - statefulsets
+      - daemonsets
+      - deployments
+      - replicasets
+    verbs: ["list", "watch"]
+  - apiGroups: ["batch"]
+    resources:
+      - cronjobs
+      - jobs
+    verbs: ["list", "watch"]
+  - apiGroups: ["autoscaling"]
+    resources:
+      - horizontalpodautoscalers
+    verbs: ["list", "watch"]
+  - apiGroups: ["authentication.k8s.io"]
+    resources:
+      - tokenreviews
+    verbs: ["create"]
+  - apiGroups: ["authorization.k8s.io"]
+    resources:
+      - subjectaccessreviews
+    verbs: ["create"]
+  - apiGroups: ["policy"]
+    resources:
+      - poddisruptionbudgets
+    verbs: ["list", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources:
+      - networkpolicies
+      - ingresses
+    verbs: ["list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources:
+      - storageclasses
+      - volumeattachments
+    verbs: ["list", "watch"]
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources:
+      - mutatingwebhookconfigurations
+      - validatingwebhookconfigurations
+    verbs: ["list", "watch"]
+  - apiGroups: ["certificates.k8s.io"]
+    resources:
+      - certificatesigningrequests
+    verbs: ["list", "watch"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources:
+      - leases
+    verbs: ["list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -74,7 +123,9 @@ metadata:
     prometheus.io/port: "8080"
 spec:
   ports:
-    - name: http-metrics   
+    - name: http-metrics
       port: 8080
       targetPort: 8080
-      protocol: TCP       
+      protocol: TCP
+  selector:
+    app: kube-state-metrics
