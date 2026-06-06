@@ -4,3 +4,4 @@ resources:
   - chat-mongodb-pv.yaml
   - shared-mysql-pv.yaml
   - shared-redis-pv.yaml
+  - rbac.yaml
