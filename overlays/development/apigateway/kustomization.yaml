@@ -2,7 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../../../base/apigateway
-  - ../ingress.yaml # APIGateway와 Ingress를 함께 배포
+  - ingress.yaml # APIGateway와 Ingress를 함께 배포
 
 images:
   - name: h6bro/service-apigateway

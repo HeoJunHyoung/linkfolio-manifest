@@ -9,7 +9,7 @@ images:
     newTag: 8cf15bf
 
 patches:
-  - path: ../patch-auth-configmap-ngrok.yaml
+  - path: patch-auth-configmap-ngrok.yaml
     target:
       kind: ConfigMap
       name: auth-service-config
