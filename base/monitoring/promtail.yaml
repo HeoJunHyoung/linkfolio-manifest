@@ -19,6 +19,8 @@ data:
       - job_name: kubernetes-pods
         kubernetes_sd_configs:
           - role: pod
+        pipeline_stages:
+          - docker: {}
         relabel_configs:
           - source_labels: [__meta_kubernetes_pod_namespace]
             target_label: namespace
@@ -28,18 +30,12 @@ data:
             target_label: container
           - source_labels: [__meta_kubernetes_node_name]
             target_label: node
-            
-          # 쿠버네티스 표준 /var/log/pods/네임스페이스_파드명_UID/컨테이너명/*.log 경로 맵핑 규칙
-          - action: replace
-            source_labels:
-              - __meta_kubernetes_pod_namespace
-              - __meta_kubernetes_pod_name
-              - __meta_kubernetes_pod_uid
-              - __meta_kubernetes_pod_container_name
-            separator: /
-            regex: '(.*)/(.*)/(.*)/(.*)'
+          # [수정된 부분] UID와 컨테이너명을 포함한 경로 맵핑 규칙
+          - source_labels: [__meta_kubernetes_pod_uid, __meta_kubernetes_pod_container_name]
+            action: replace
             target_label: __path__
-            replacement: /var/log/pods/$1_$2_$3/$4/*.log
+            regex: '(.+);(.+)'
+            replacement: /var/log/pods/*$1*/*$2/*.log
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -56,6 +52,10 @@ spec:
         app: promtail
     spec:
       serviceAccountName: promtail
+      # [추가된 부분] 로그 파일 접근을 위해 루트 권한 설정
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
       containers:
         - name: promtail
           image: grafana/promtail:2.8.2
@@ -70,6 +70,9 @@ spec:
             - name: logs
               mountPath: /var/log/pods
               readOnly: true
+            - name: docker-logs
+              mountPath: /var/log/containers
+              readOnly: true
             - name: promtail-config
               mountPath: /etc/promtail
           ports:
@@ -79,6 +82,9 @@ spec:
         - name: logs
           hostPath:
             path: /var/log/pods
+        - name: docker-logs
+          hostPath:
+            path: /var/log/containers
         - name: promtail-config
           configMap:
             name: promtail-config
