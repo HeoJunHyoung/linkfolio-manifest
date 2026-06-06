@@ -22,10 +22,7 @@ data:
         pipeline_stages:
           - docker: {}
         relabel_configs:
-          - source_labels: [__meta_kubernetes_pod_annotation_promtail_io_scrape]
-            action: keep
-            regex: true
-            # 어노테이션 관계 없이 모든 파드를 기본 수집하려면 위 keep 액션을 주석 처리하거나 아래처럼 수집 조건을 완화합니다.
+          # 1. 수집 조건을 완화하여 전 네임스페이스의 모든 파드 기본 수집
           - action: replace
             source_labels: [__meta_kubernetes_pod_namespace]
             target_label: namespace
@@ -38,48 +35,10 @@ data:
           - action: replace
             source_labels: [__meta_kubernetes_node_name]
             target_label: node
-          - type: static
+          
+          # 물리 노드의 실제 컨테이너 로그 경로(/var/log/pods/네임스페이스_파드명_UID/컨테이너/*.log)와 매칭 규칙 주입
+          - source_labels: [__meta_kubernetes_pod_uid__, __meta_kubernetes_pod_container_name]
+            action: replace
             target_label: __path__
-            replacement: /var/log/pods/*$__meta_kubernetes_pod_uid__$*/*.log
----
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  name: promtail
-  namespace: default
-spec:
-  selector:
-    matchLabels:
-      app: promtail
-  template:
-    metadata:
-      labels:
-        app: promtail
-    spec:
-      serviceAccountName: promtail
-      containers:
-        - name: promtail
-          image: grafana/promtail:2.8.2
-          args:
-            - -config.file=/etc/promtail/promtail.yaml
-          env:
-            - name: 'HOSTNAME'
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-          volumeMounts:
-            - name: logs
-              mountPath: /var/log/pods
-              readOnly: true
-            - name: promtail-config
-              mountPath: /etc/promtail
-          ports:
-            - containerPort: 9080
-              name: http-metrics
-      volumes:
-        - name: logs
-          hostPath:
-            path: /var/log/pods
-        - name: promtail-config
-          configMap:
-            name: promtail-config
+            separator: /
+            replacement: /var/log/pods/*$1*/*.log
