@@ -9,3 +9,4 @@ resources:
   - loki.yaml          
   - promtail.yaml      
   - promtail-rbac.yaml
+  - kube-state-metrics.yaml
